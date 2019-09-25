@@ -1,0 +1,24 @@
+server:
+   port: 8080
+   contextPath: localhost
+   ip: localhost
+
+spring:
+   application.name: Identification
+
+api.key: 9024834c017447d79206a191c1924acd
+
+device:
+   id: Identification
+   rest:
+     local:
+        schema: http
+        network:
+           interface: interface
+           ipv6: false
+     basepath: localhost
+   register.fail.retry.seconds: 60
+   ping.interval.seconds: 10
+   logic.main.loop.delay.seconds: 5
+
+onesaitplatform.digitaltwin.broker.rest: dtuno/ejemplo
