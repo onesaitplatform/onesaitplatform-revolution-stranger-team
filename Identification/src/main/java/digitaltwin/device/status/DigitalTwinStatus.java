@@ -27,6 +27,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 @Slf4j
 public class DigitalTwinStatus implements IDigitalTwinStatus{
@@ -51,6 +54,8 @@ public class DigitalTwinStatus implements IDigitalTwinStatus{
 	private OperationType operationAlarmaTemperatura;
 	
 	private Map<String, Class> mapClass;
+
+	private static final Logger log = LoggerFactory.getLogger(DigitalTwinStatus.class.getName());
 
 	@PostConstruct
 	public void init() {
@@ -121,4 +126,14 @@ public class DigitalTwinStatus implements IDigitalTwinStatus{
 		return properties;
 	}
 	
+	public void setOperationIdentificador(OperationType entrada){
+		//TODO
+	}
+	public void setOperationTemperatura(OperationType entrada){
+		//TODO
+	}
+	public void setOperationAlarmaTemperatura(OperationType entrada){
+		//TODO
+	}
+
 }

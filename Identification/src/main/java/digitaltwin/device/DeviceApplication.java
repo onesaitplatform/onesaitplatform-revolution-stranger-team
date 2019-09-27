@@ -14,13 +14,41 @@
  */
 package digitaltwin.device;
 
+import javax.net.ssl.*;
+import java.security.*;
+import java.security.cert.X509Certificate;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages="com.minsait.onesait.platform, digitaltwin.device")
+@SpringBootApplication(scanBasePackages = "com.minsait.onesait.platform, digitaltwin.device")
 public class DeviceApplication {
 
+	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
+		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		public void checkClientTrusted(X509Certificate[] certs, String authType) {
+		}
+
+		public void checkServerTrusted(X509Certificate[] certs, String authType) {
+		}
+	} };
+
 	public static void main(String[] args) {
+		try {
+			turnOffSslChecking();
+		} catch (KeyManagementException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		SpringApplication.run(DeviceApplication.class, args);
 	}
+
+	private static void turnOffSslChecking() throws NoSuchAlgorithmException, KeyManagementException {
+        // Install the all-trusting trust manager
+        final SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init( null, UNQUESTIONING_TRUST_MANAGER, null );
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+    }
 }

@@ -1,6 +1,6 @@
 server:
    port: 8080
-   contextPath: localhost
+   contextPath: /dtuno
    ip: localhost
 
 spring:
@@ -14,11 +14,11 @@ device:
      local:
         schema: http
         network:
-           interface: interface
+           interface: eth0
            ipv6: false
-     basepath: localhost
+     basepath: /dtuno
    register.fail.retry.seconds: 60
    ping.interval.seconds: 10
    logic.main.loop.delay.seconds: 5
 
-onesaitplatform.digitaltwin.broker.rest: dtuno/ejemplo
+onesaitplatform.digitaltwin.broker.rest: https://www.onesaitplatform.online/digitaltwinbroker
