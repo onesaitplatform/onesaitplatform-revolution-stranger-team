@@ -1,0 +1,64 @@
+ apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.minsait.onesaitplatform.digitaltwins"
+
+        // Sceneform requires minSdkVersion >= 24.
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+    }
+    // Sceneform libraries use language constructs from Java 8.
+    // Add these compile options if targeting minSdkVersion < 26.
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
+
+    // Use the Sceneform UX Package pre-built from Maven.
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.12.0"
+
+    // Use the Sceneform UX Package built from the source files included in the sceneformux folder.
+    //api project(":sceneformux")
+}
+
+apply plugin: 'com.google.ar.sceneform.plugin'
+
+sceneform.asset('sampledata/aire_acondicionado/Air conditioner 1 effect.obj',
+        'default',
+        'sampledata/aire_acondicionado/Air conditioner 1 effect.sfa',
+        'src/main/assets/aire_acondicionadot')
+
+sceneform.asset('sampledata/detector_humo/model.obj',
+        'default',
+        'sampledata/detector_humo/model.sfa',
+        'src/main/assets/detector_humo')
+
+sceneform.asset('sampledata/aire_acondicionado/Air conditioner 1 effect.obj',
+        'default',
+        'sampledata/aire_acondicionado/Air conditioner 1 effect.sfa',
+        'src/main/assets/aire_acondicionado')
+
+sceneform.asset('sampledata/alarma_incendio/Fire alarm.obj',
+        'default',
+        'sampledata/alarma_incendio/Fire alarm.sfa',
+        'src/main/assets/alarma_incendio')
+
+sceneform.asset('sampledata/termostato/termostato.obj',
+        'default',
+        'sampledata/termostato/termostato.sfa',
+        'src/main/assets/termostato')
