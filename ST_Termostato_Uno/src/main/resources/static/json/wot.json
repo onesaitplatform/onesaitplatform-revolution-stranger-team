@@ -15,7 +15,7 @@
     }
   },
   "actions": {
-    "obtenerTemperatura": {
+    "ObtenerTemperatura": {
       "description": "Obtiene la temperatura en el Digital Twin"
     }
   },

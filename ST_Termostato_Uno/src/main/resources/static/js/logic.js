@@ -25,4 +25,6 @@ function getRandom(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-var onActionObtenerTemperatura=function(data){ }
+var onActionObtenerTemperatura=function(data){
+    digitalTwinApi.log('ObtenerTemperatura:' + data);
+}
