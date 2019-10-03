@@ -12,6 +12,11 @@
       "units": "grados",
       "direction": "in",
       "description": "Temperatura"
+    },
+    "fecha_dashboard": {
+      "type": "string",
+      "direction": "in",
+      "description": "Fecha formateada para el dashboard"
     }
   },
   "actions": {
