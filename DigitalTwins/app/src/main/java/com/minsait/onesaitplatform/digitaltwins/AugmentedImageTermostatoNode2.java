@@ -18,9 +18,13 @@ package com.minsait.onesaitplatform.digitaltwins;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -132,6 +136,33 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
                                 }
                             } else {
                                 ViewRenderable.builder()
+                                        .setView(sceneParent.getView().getContext(), R.layout.fragment_temperatura_webview)
+                                        .build()
+                                        .thenAccept(renderable -> {
+                                            List<Temperatura> lista = new ArrayList<Temperatura>();
+                                            lista.add(new Temperatura("28/09/2019", 26.40f));
+                                            lista.add(new Temperatura("29/09/2019", 25.40f));
+                                            lista.add(new Temperatura("30/09/2019", 25.30f));
+                                            lista.add(new Temperatura("01/10/2019", 24.40f));
+                                            lista.add(new Temperatura("02/10/2019", 25.40f));
+
+                                            WebView wv = (WebView) renderable.getView();
+                                            configurarWebView(wv);
+                                            wv.loadUrl("https://lab.onesaitplatform.com/controlpanel/dashboards/view/66075504-93d1-4d42-a08b-947a1b6ff04a");
+                                            //wv.loadUrl("https://lab.onesaitplatform.com/controlpanel/dashboards/view/ab3d2faa-2adc-40e0-8b2f-feca099ee9f2");
+
+                                            AnchorNode nodoRV = new AnchorNode();
+                                            Vector3 posicion = new Vector3(getLocalPosition());
+                                            posicion.y -= 0.136f * 8;
+                                            nodoRV.setLocalPosition(posicion);
+                                            nodoRV.setLookDirection(new Vector3(45.00f, 0.00f, 0.00f));
+
+                                            nodoRV.setParent(AugmentedImageTermostatoNode2.this);
+                                            nodoRV.setRenderable(renderable);
+                                        });
+
+                                /*
+                                ViewRenderable.builder()
                                         .setView(sceneParent.getView().getContext(), R.layout.fragment_temperatura_list)
                                         .build()
                                         .thenAccept(renderable -> {
@@ -153,11 +184,37 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
 
                                             nodoRV.setParent(AugmentedImageTermostatoNode2.this);
                                             nodoRV.setRenderable(renderable);
-                                        });
+                                        });*/
                             }
                         }
                     });
                 });
+    }
+
+    /**
+     * Método que se encarga de configurar el WebView para que muestre el DashBoard
+     */
+    private void configurarWebView(WebView wv) {
+        final WebSettings settings = wv.getSettings();
+
+        settings.setLoadsImagesAutomatically(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setAppCacheEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            settings.setSafeBrowsingEnabled(false);
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        wv.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true);
+        }
+        // Extras tried for Android 9.0, can be removed if want.
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccess(true);
+        settings.setBlockNetworkImage(false);
     }
 
     public AugmentedImage getImage() {

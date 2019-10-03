@@ -3,36 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.minsait.onesaitplatform.digitaltwins">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- This tag indicates that this application requires ARCore.  This results in the application
-         only being visible in the Google Play Store on devices that support ARCore. -->
-    <uses-feature
-        android:name="android.hardware.camera.ar"
-        android:required="true" />
-
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".Main2Activity"></activity>
         <activity
-            android:name="com.minsait.onesaitplatform.digitaltwins.AugmentedImageActivity"
+            android:name=".AugmentedImageActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:screenOrientation="locked">
+            android:screenOrientation="locked"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- This tag indicates that this application requires ARCore.  This results in the Google Play
-             Store downloading and installing ARCore along with the application. -->
+        <!--
+ This tag indicates that this application requires ARCore.  This results in the Google Play
+             Store downloading and installing ARCore along with the application.
+        -->
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
     </application>
+    <!--
+ This tag indicates that this application requires ARCore.  This results in the application
+         only being visible in the Google Play Store on devices that support ARCore.
+    -->
+    <uses-feature
+        android:name="android.hardware.camera.ar"
+        android:required="true" />
+    <!-- Permiso necesario para ARCore -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Permiso necesario para el webview y conectar a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
