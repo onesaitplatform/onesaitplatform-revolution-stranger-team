@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.minsait.onesaitplatform.digitaltwins">
-
+    <!--
+ This tag indicates that this application requires ARCore.  This results in the application
+         only being visible in the Google Play Store on devices that support ARCore.
+    -->
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
@@ -10,7 +13,10 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Main2Activity"></activity>
+        <activity android:name=".DummyActivity">
+
+        </activity>
+        <activity android:name=".Main2Activity" />
         <activity
             android:name=".AugmentedImageActivity"
             android:configChanges="orientation|screenSize"
@@ -30,17 +36,12 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
-    </application>
-    <!--
- This tag indicates that this application requires ARCore.  This results in the application
-         only being visible in the Google Play Store on devices that support ARCore.
-    -->
+    </application> <!-- Permiso necesario para ARCore -->
     <uses-feature
         android:name="android.hardware.camera.ar"
-        android:required="true" />
-    <!-- Permiso necesario para ARCore -->
+        android:required="true" /> <!-- Permiso necesario para el webview y conectar a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- Permiso necesario para el webview y conectar a Internet -->
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
