@@ -19,8 +19,6 @@ package com.minsait.onesaitplatform.digitaltwins;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;

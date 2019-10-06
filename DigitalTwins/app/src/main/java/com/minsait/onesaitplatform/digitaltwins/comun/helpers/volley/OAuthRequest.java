@@ -16,7 +16,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Constantes;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

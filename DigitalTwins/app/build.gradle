@@ -31,9 +31,8 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
 
-    implementation 'com.github.bumptech.glide:glide:4.0.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     implementation 'com.android.volley:volley:1.1.1'
+
     implementation 'com.google.code.gson:gson:2.8.2'
 
     // Use the Sceneform UX Package pre-built from Maven.
@@ -51,11 +50,6 @@ dependencies {
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
-
-sceneform.asset('sampledata/aire_acondicionado/Air conditioner 1 effect.obj',
-        'default',
-        'sampledata/aire_acondicionado/Air conditioner 1 effect.sfa',
-        'src/main/assets/aire_acondicionadot')
 
 sceneform.asset('sampledata/detector_humo/model.obj',
         'default',

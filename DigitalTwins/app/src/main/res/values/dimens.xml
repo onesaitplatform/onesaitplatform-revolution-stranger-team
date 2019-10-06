@@ -19,4 +19,7 @@
     <dimen name="list_item_temperatura_padding">2dp</dimen>
     <dimen name="list_item_temperatura_element_padding">2dp</dimen>
     <dimen name="list_item_temperatura_text_size">8sp</dimen>
+
+    <dimen name="img_temperatura_width">320dp</dimen>
+    <dimen name="img_temperatura_height">180dp</dimen>
 </resources>

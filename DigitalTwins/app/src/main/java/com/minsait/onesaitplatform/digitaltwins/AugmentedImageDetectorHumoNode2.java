@@ -24,10 +24,14 @@ import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
-import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.QuaternionEvaluator;
@@ -35,7 +39,17 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Constantes;
+import com.minsait.onesaitplatform.digitaltwins.vo.ToggleHumoDetectadoRequestVO;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -104,7 +118,42 @@ public class AugmentedImageDetectorHumoNode2 extends TransformableNode {
         nodo.setParent(sceneParent);
         // Asignamos el listener para saber si se ha pulsado.
         setOnTapListener((hitTestResult, motionEvent) -> {
-            Log.e(TAG, "TAP.");
+            // Inicializamos GSon
+            Gson gson = new Gson();
+            Type tipo = new TypeToken<ToggleHumoDetectadoRequestVO>() {
+            }.getType();
+
+            // Preparamos la solicitud.
+            ToggleHumoDetectadoRequestVO solicitudJSON = new ToggleHumoDetectadoRequestVO();
+
+            try {
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST,
+                        Constantes.BASE_URL_DETECTOR_HUMO + Constantes.RECURSO_DETECTOR_HUMO,
+                        new JSONObject(gson.toJson(solicitudJSON, tipo)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(this.getClass().getName(), "ToggleHumoDetectadoRequest enviado.");
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e(this.getClass().getName(), "ToggleHumoDetectadoRequest: " + error.getMessage());
+                            }
+                        }) {
+                };
+                // Configuramos los reintentos por problemas de red y el timeout.
+                jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        Constantes.CONNECTION_TIMEOUT,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+                // Añadimos la solicitud a la cola.
+                AppController.getInstance().addToRequestQueue(jsonRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
 
         this.setParent(nodo);

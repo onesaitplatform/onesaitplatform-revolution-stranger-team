@@ -16,27 +16,18 @@
 
 package com.minsait.onesaitplatform.digitaltwins;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.HitTestResult;
-import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
-import com.minsait.onesaitplatform.digitaltwins.comun.helpers.TemperaturaRecyclerViewAdapter;
-import com.minsait.onesaitplatform.digitaltwins.vo.Temperatura;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**

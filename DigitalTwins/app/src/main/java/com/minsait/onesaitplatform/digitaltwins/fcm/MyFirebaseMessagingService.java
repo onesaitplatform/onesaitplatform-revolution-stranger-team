@@ -15,7 +15,6 @@ import com.google.gson.reflect.TypeToken;
 import com.minsait.onesaitplatform.digitaltwins.AppController;
 import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Autorizaciones;
 import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Constantes;
-import com.minsait.onesaitplatform.digitaltwins.vo.ApiResponseVO;
 import com.minsait.onesaitplatform.digitaltwins.vo.RegisterFcmTokenRequestVO;
 import com.minsait.onesaitplatform.digitaltwins.vo.RegisterFcmTokenResponseVO;
 

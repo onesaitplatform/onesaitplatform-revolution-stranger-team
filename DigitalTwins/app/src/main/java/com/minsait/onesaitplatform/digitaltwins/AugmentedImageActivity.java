@@ -160,7 +160,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
-                headers.put("Authorization",
+                headers.put(Constantes.HEADER_NAME_AUTHORIZATION,
                         String.format("%s %s",
                                 Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN_TYPE),
                                 Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN)));

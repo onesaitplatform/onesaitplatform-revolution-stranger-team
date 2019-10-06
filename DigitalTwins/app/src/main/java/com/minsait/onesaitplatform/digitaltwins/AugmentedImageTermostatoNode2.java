@@ -16,36 +16,34 @@
 
 package com.minsait.onesaitplatform.digitaltwins;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 
 import android.util.Log;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.RenderProcessGoneDetail;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
-import com.minsait.onesaitplatform.digitaltwins.comun.helpers.SnackbarHelper;
-import com.minsait.onesaitplatform.digitaltwins.vo.Temperatura;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Autorizaciones;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Constantes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -66,6 +64,7 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
     private AppCompatActivity actividad;
     // Contiene el modelo a renderizar.
     private CompletableFuture<ModelRenderable> modeloRenderizable;
+    private boolean botonPulsado = false;
 
     public AugmentedImageTermostatoNode2(AppCompatActivity actividad, TransformationSystem transformationSystem, Scene parent) {
         super(transformationSystem);
@@ -119,7 +118,7 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
                     ImageView ib = (ImageView) renderable.getView();
 
                     AnchorNode nodoBoton = new AnchorNode();
-                    nodoBoton.setParent(AugmentedImageTermostatoNode2.this);
+                    nodoBoton.setParent(this);
                     Vector3 posicion = new Vector3(getLocalPosition());
                     posicion.z -= 0.055f;
                     posicion.y += 0.055f;
@@ -131,16 +130,97 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
                         @Override
                         public void onClick(View view) {
                             // Si tenemos visible la tabla, la eliminamos.
-                            if (getChildren().size() > 2) {
-                                for (int i = 2; getChildren().size() > 2; i++) {
+                            if (botonPulsado) {
+                                for (int i = 0; i < getChildren().size(); i++) {
                                     Node nodo = getChildren().get(i);
-                                    nodo.setParent(null);
-                                    sceneParent.removeChild(nodo);
-                                    i--;
+                                    if ("Nodo_Dashboard".equals(nodo.getName())) {
+                                        nodo.getParent().removeChild(nodo);
+                                        nodo.setParent(null);
+                                        sceneParent.removeChild(nodo);
+
+                                        botonPulsado = false;
+                                    }
                                 }
                             } else {
-                                // Avisamos al usuario de que vamos a cargar el dashboard.
-                                SnackbarHelper.getInstance().showMessage(actividad, "Cargando Dashboard.");
+                                botonPulsado = true;
+                                // Creamos la imagen para mostrarla.
+                                ViewRenderable.builder()
+                                        .setView(sceneParent.getView().getContext(), R.layout.img_termostato_dashboard)
+                                        .build()
+                                        .thenAccept(renderable -> {
+                                            ImageView im = (ImageView) renderable.getView();
+                                            Log.d(TAG, "ObtenerImagenDashBoardTemperatura: 1");
+                                            ImageRequest request = new ImageRequest(String.format("%s%s",
+                                                    Constantes.URL_TEMPERATURA_DASH_BOARD,
+                                                    Constantes.PARAMS_TEMPERATURA_DASH_BOARD),
+                                                    new Response.Listener<Bitmap>() {
+                                                        @Override
+                                                        public void onResponse(Bitmap bitmap) {
+                                                            Log.d(TAG, "ObtenerImagenDashBoardTemperatura: " + bitmap.getDensity());
+                                                            im.setImageBitmap(bitmap);
+                                                            Log.d(TAG, "ObtenerImagenDashBoardTemperatura:2.");
+                                                        }
+                                                    }, 0, 0,
+                                                    ImageView.ScaleType.CENTER_INSIDE,
+                                                    null,
+                                                    new Response.ErrorListener() {
+                                                        public void onErrorResponse(VolleyError error) {
+                                                            im.setImageResource(R.drawable.img_error_carga_dashboard);
+                                                            Log.e(TAG, "ObtenerImagenDashBoardTemperatura: " + error.getMessage());
+                                                        }
+                                                    }) {
+                                                @Override
+                                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                                    // Añadimos la autorización con el token OAuth
+                                                    Map<String, String> res = new HashMap<String, String>();
+                                                    res.put(Constantes.HEADER_NAME_AUTHORIZATION,
+                                                            String.format("%s %s",
+                                                                    Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN_TYPE),
+                                                                    Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN)));
+
+                                                    return res;
+                                                }
+                                            };
+
+                                            // Configuramos los reintentos por problemas de red y el timeout.
+                                            request.setRetryPolicy(new DefaultRetryPolicy(
+                                                    Constantes.CONNECTION_TIMEOUT,
+                                                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+                                            // Añadimos la solicitud a la cola.
+                                            AppController.getInstance().addToRequestQueue(request);
+
+                                            /*
+                                            // Configuramos Glide para enviar el token de OAuth y poder descargar la imagen
+                                            // del dashboard.
+                                            GlideUrl glideUrl = new GlideUrl(
+                                                    String.format("%s%s",
+                                                            Constantes.URL_TEMPERATURA_DASH_BOARD,
+                                                            Constantes.PARAMS_TEMPERATURA_DASH_BOARD),
+                                                    new LazyHeaders.Builder()
+                                                    .addHeader(Constantes.HEADER_NAME_AUTHORIZATION,
+                                                            String.format("%s %s",
+                                                            Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN_TYPE),
+                                                            Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN)))
+                                                    .build());
+                                            // Realizamos la carga de la imagen con Glide.
+                                            Glide.with(actividad)
+                                                    .load(glideUrl)
+                                                    .into(im);*/
+
+                                            // Configuramos el nodo.
+                                            AnchorNode nodoDashboard = new AnchorNode();
+                                            nodoDashboard.setName("Nodo_Dashboard");
+                                            Vector3 posicion = new Vector3(getLocalPosition());
+                                            posicion.y -= 0.800;
+                                            nodoDashboard.setLocalPosition(posicion);
+                                            nodoDashboard.setLookDirection(new Vector3(45.00f, 0.00f, 0.00f));
+
+                                            nodoDashboard.setParent(AugmentedImageTermostatoNode2.this);
+                                            nodoDashboard.setRenderable(renderable);
+                                        });
+                                /*
                                 ViewRenderable.builder()
                                         .setView(sceneParent.getView().getContext(), R.layout.fragment_temperatura_webview)
                                         .build()
@@ -159,7 +239,6 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
                                             nodoRV.setRenderable(renderable);
                                         });
 
-                                /*
                                 ViewRenderable.builder()
                                         .setView(sceneParent.getView().getContext(), R.layout.fragment_temperatura_list)
                                         .build()
@@ -192,6 +271,7 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
     /**
      * Método que se encarga de configurar el WebView para que muestre el DashBoard
      */
+    /*
     private void configurarWebView(WebView wv) {
         final WebSettings settings = wv.getSettings();
 
@@ -214,6 +294,7 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
         settings.setAllowFileAccess(true);
         settings.setBlockNetworkImage(false);
     }
+    */
 
     public AugmentedImage getImage() {
         return image;
