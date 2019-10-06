@@ -1,7 +1,7 @@
 server:
   port: 21000
   contextPath: /termostato
-  ip: localhost
+  ip: onesaitrevolution.ddns.net
 
 spring:
   application.name: ST_Termostato_Uno

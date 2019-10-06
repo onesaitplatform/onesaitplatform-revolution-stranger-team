@@ -1,7 +1,7 @@
 server:
    port: 21002
    contextPath: /Alarma
-   ip: localhost
+   ip: onesaitrevolution.ddns.net
 
 spring:
    application.name: ST_Alarma_Uno

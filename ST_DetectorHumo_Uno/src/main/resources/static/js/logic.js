@@ -8,6 +8,10 @@ function init(){
   digitalTwinApi.log("Init");
   // Inicializamos el estado de la detección de humo a false.
   digitalTwinApi.setStatusValue("humoDetectado", false);
+  // Llamamos a updateShadow para registrar el estado en la plataforma.
+  var hm = new HashMap();
+  hm.put("humoDetectado", false);
+  digitalTwinApi.sendUpdateShadow(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(hm));
 }
 
 function main(){
