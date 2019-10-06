@@ -16,18 +16,20 @@
 
 package com.minsait.onesaitplatform.digitaltwins;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.RenderProcessGoneDetail;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
@@ -35,11 +37,11 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
 import com.minsait.onesaitplatform.digitaltwins.comun.helpers.SnackbarHelper;
-import com.minsait.onesaitplatform.digitaltwins.comun.helpers.TemperaturaRecyclerViewAdapter;
 import com.minsait.onesaitplatform.digitaltwins.vo.Temperatura;
 
 import java.util.ArrayList;
@@ -61,16 +63,18 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
     // Nodo del objeto que se renderizará.
     private AnchorNode nodo;
     private Scene sceneParent;
+    private AppCompatActivity actividad;
     // Contiene el modelo a renderizar.
     private CompletableFuture<ModelRenderable> modeloRenderizable;
 
-    public AugmentedImageTermostatoNode2(Context context, TransformationSystem transformationSystem, Scene parent) {
+    public AugmentedImageTermostatoNode2(AppCompatActivity actividad, TransformationSystem transformationSystem, Scene parent) {
         super(transformationSystem);
         sceneParent = parent;
+        this.actividad = actividad;
         // Cargamos el modelo renderizable a partir del fichero sfb.
         modeloRenderizable =
                 ModelRenderable.builder()
-                        .setSource(context, Uri.parse("termostato.sfb"))
+                        .setSource(actividad, Uri.parse("termostato.sfb"))
                         .build();
     }
 
@@ -135,21 +139,15 @@ public class AugmentedImageTermostatoNode2 extends TransformableNode {
                                     i--;
                                 }
                             } else {
+                                // Avisamos al usuario de que vamos a cargar el dashboard.
+                                SnackbarHelper.getInstance().showMessage(actividad, "Cargando Dashboard.");
                                 ViewRenderable.builder()
                                         .setView(sceneParent.getView().getContext(), R.layout.fragment_temperatura_webview)
                                         .build()
                                         .thenAccept(renderable -> {
-                                            List<Temperatura> lista = new ArrayList<Temperatura>();
-                                            lista.add(new Temperatura("28/09/2019", 26.40f));
-                                            lista.add(new Temperatura("29/09/2019", 25.40f));
-                                            lista.add(new Temperatura("30/09/2019", 25.30f));
-                                            lista.add(new Temperatura("01/10/2019", 24.40f));
-                                            lista.add(new Temperatura("02/10/2019", 25.40f));
-
                                             WebView wv = (WebView) renderable.getView();
                                             configurarWebView(wv);
-                                            wv.loadUrl("https://lab.onesaitplatform.com/controlpanel/dashboards/view/66075504-93d1-4d42-a08b-947a1b6ff04a");
-                                            //wv.loadUrl("https://lab.onesaitplatform.com/controlpanel/dashboards/view/ab3d2faa-2adc-40e0-8b2f-feca099ee9f2");
+                                            wv.loadUrl("https://lab.onesaitplatform.com/controlpanel/dashboards/view/1e8d7094-0a5b-45a5-a21c-dea20f79c541");
 
                                             AnchorNode nodoRV = new AnchorNode();
                                             Vector3 posicion = new Vector3(getLocalPosition());

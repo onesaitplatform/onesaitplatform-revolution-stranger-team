@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.minsait.onesaitplatform.digitaltwins"
 
         // Sceneform requires minSdkVersion >= 24.
         minSdkVersion 24
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -26,15 +26,28 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
 
     // Use the Sceneform UX Package pre-built from Maven.
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.12.0"
 
     // Use the Sceneform UX Package built from the source files included in the sceneformux folder.
     //api project(":sceneformux")
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+    // Dependencias de Firebase
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-iid:20.0.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'androidx.work:work-runtime:2.2.0'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
@@ -63,3 +76,5 @@ sceneform.asset('sampledata/termostato/termostato.obj',
         'default',
         'sampledata/termostato/termostato.sfa',
         'src/main/assets/termostato')
+
+apply plugin: 'com.google.gms.google-services'

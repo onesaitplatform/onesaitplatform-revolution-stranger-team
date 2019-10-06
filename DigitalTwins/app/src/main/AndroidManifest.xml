@@ -9,8 +9,37 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="false"
+        android:name=".AppController"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Main2Activity"></activity>
+
+        <!-- [START fcm_default_icon] -->
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_view_boton_tabla" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/color_fondo_recyclerview" />
+        <!-- [END fcm_default_icon] -->
+
+        <!--  This tag indicates that this application requires ARCore.  This results in the Google Play
+              Store downloading and installing ARCore along with the application. -->
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="required" />
+
+        <!-- [START fcm_default_channel] -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+        <!-- [END fcm_default_channel] -->
+
+        <activity
+            android:name=".Main2Activity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".AugmentedImageActivity"
             android:configChanges="orientation|screenSize"
@@ -23,18 +52,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
- This tag indicates that this application requires ARCore.  This results in the Google Play
-             Store downloading and installing ARCore along with the application.
-        -->
-        <meta-data
-            android:name="com.google.ar.core"
-            android:value="required" />
+
+        <!-- [START firebase_service] -->
+        <service
+            android:name="com.minsait.onesaitplatform.digitaltwins.fcm.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
     </application>
-    <!--
- This tag indicates that this application requires ARCore.  This results in the application
-         only being visible in the Google Play Store on devices that support ARCore.
-    -->
+    <!--  This tag indicates that this application requires ARCore.  This results in the application
+          only being visible in the Google Play Store on devices that support ARCore. -->
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />

@@ -19,9 +19,10 @@ package com.minsait.onesaitplatform.digitaltwins;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
+
+import androidx.annotation.Nullable;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
@@ -101,6 +102,10 @@ public class AugmentedImageDetectorHumoNode2 extends TransformableNode {
         // Creamos finalmente el nodo y añadimos el modelo a renderizar.
         nodo = new AnchorNode(image.createAnchor(image.getCenterPose()));
         nodo.setParent(sceneParent);
+        // Asignamos el listener para saber si se ha pulsado.
+        setOnTapListener((hitTestResult, motionEvent) -> {
+            Log.e(TAG, "TAP.");
+        });
 
         this.setParent(nodo);
         this.setRenderable(modeloRenderizable.getNow(null));

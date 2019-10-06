@@ -15,9 +15,10 @@
 package com.minsait.onesaitplatform.digitaltwins.comun.helpers;
 
 import android.app.Activity;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.Snackbar;
 import android.view.View;
+
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Helper to manage the sample snackbar. Hides the Android boilerplate code, and exposes simpler
@@ -91,7 +92,7 @@ public final class SnackbarHelper {
                                 Snackbar.make(
                                         activity.findViewById(android.R.id.content),
                                         message,
-                                        Snackbar.LENGTH_INDEFINITE);
+                                        Snackbar.LENGTH_SHORT);
                         messageSnackbar.getView().setBackgroundColor(BACKGROUND_COLOR);
                         if (dismissBehavior != DismissBehavior.HIDE) {
                             messageSnackbar.setAction(

@@ -20,9 +20,10 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
+
+import androidx.annotation.Nullable;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;

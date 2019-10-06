@@ -17,19 +17,36 @@
 package com.minsait.onesaitplatform.digitaltwins;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Node;
-import com.minsait.onesaitplatform.digitaltwins.R;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Autorizaciones;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.Constantes;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.SnackbarHelper;
+import com.minsait.onesaitplatform.digitaltwins.comun.helpers.volley.OAuthRequest;
+import com.minsait.onesaitplatform.digitaltwins.vo.ApiResponseVO;
+import com.minsait.onesaitplatform.digitaltwins.vo.OAuthResponseVO;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +80,101 @@ public class AugmentedImageActivity extends AppCompatActivity {
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
 
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+
+        // Obtenemos el token de OAuth y si va todo bien, también el token de API.
+        obtenerOAuthToken();
+    }
+
+    // Se encarga de realizar la obtención del Token de OAuth.
+    private void obtenerOAuthToken() {
+        OAuthRequest oAuthRequest = new OAuthRequest(
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Procesamos la respuesta.
+                        Type tipo = new TypeToken<OAuthResponseVO>() {
+                        }.getType();
+                        Gson gson = new Gson();
+                        // Creamos el objeto con los datos.
+                        OAuthResponseVO oAuthResponseVO = gson.fromJson(response, tipo);
+                        // Añadimos el token de OAuth a las autorizaciones.
+                        Autorizaciones.getInstance().getMap().put(Autorizaciones.OAUTH_TOKEN, oAuthResponseVO.getAccess_token());
+                        // Añadimos el tipo de token de OAuth a las autorizaciones.
+                        Autorizaciones.getInstance().getMap().put(Autorizaciones.OAUTH_TOKEN_TYPE, oAuthResponseVO.getToken_type());
+
+                        Log.d(this.getClass().getName(), "OAUTH_TOKEN: " + oAuthResponseVO.getAccess_token());
+
+                        // Avisamos al usuario de que tenemos el token.
+                        SnackbarHelper.getInstance().showMessage(AugmentedImageActivity.this, "Token OAuth obtenido correctamente.");
+
+                        // Ahora que ya tenemos el token OAuth vamos a obtener el token de las APIs.
+                        obtenerApiToken();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(this.getClass().getName(), "obtenerOAuthToken: " + error.getMessage());
+                    }
+                });
+        // Configuramos los reintentos por problemas de red y el timeout.
+        oAuthRequest.setRetryPolicy(new DefaultRetryPolicy(
+                Constantes.CONNECTION_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Añadimos la solicitud a la cola.
+        AppController.getInstance().addToRequestQueue(oAuthRequest);
+    }
+
+    // Se encarga de realizar la obtención del Token de las APIs.
+    private void obtenerApiToken() {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET,
+                Constantes.URL_USER_API_TOKEN,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Procesamos la respuesta.
+                        Type tipo = new TypeToken<ApiResponseVO>() {
+                        }.getType();
+                        Gson gson = new Gson();
+                        // Creamos el objeto con los datos.
+                        ApiResponseVO apiResponseVO = gson.fromJson(response.toString(), tipo);
+                        // Añadimos el token de Api a las autorizaciones.
+                        Autorizaciones.getInstance().getMap().put(Autorizaciones.API_TOKEN, apiResponseVO.getUserTokens().get(0));
+
+                        Log.d(this.getClass().getName(), "API_TOKEN: " + apiResponseVO.getUserTokens().get(0));
+
+                        // Avisamos al usuario de que tenemos el token.
+                        SnackbarHelper.getInstance().showMessage(AugmentedImageActivity.this, "Token Api obtenido correctamente.");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(this.getClass().getName(), "obtenerApiToken: " + error.getMessage());
+                    }
+                }) {
+            // Añadimos en la cabecera el token OAuth para que nos devuelva el token del API.
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                HashMap headers = new HashMap();
+                headers.put("Authorization",
+                        String.format("%s %s",
+                                Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN_TYPE),
+                                Autorizaciones.getInstance().getMap().get(Autorizaciones.OAUTH_TOKEN)));
+                return headers;
+            }
+        };
+        // Configuramos los reintentos por problemas de red y el timeout.
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                Constantes.CONNECTION_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Añadimos la solicitud a la cola.
+        AppController.getInstance().addToRequestQueue(jsonRequest);
     }
 
     @Override
@@ -71,7 +183,16 @@ public class AugmentedImageActivity extends AppCompatActivity {
         if (augmentedImageMap.isEmpty()) {
             fitToScanView.setVisibility(View.VISIBLE);
         }
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Si se cierra la actividad, nos aseguramos de cortar
+        if (AppController.getInstance().getRequestQueue() != null) {
+            AppController.getInstance().getRequestQueue().cancelAll(Constantes.TAG_OAUTH);
+            AppController.getInstance().getRequestQueue().cancelAll(Constantes.TAG_USER_API);
+        }
     }
 
     /**

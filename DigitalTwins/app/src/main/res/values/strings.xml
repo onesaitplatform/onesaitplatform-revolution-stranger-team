@@ -19,4 +19,7 @@
 
     <string name="list_item_element_fecha_string">01/01/2019</string>
     <string name="list_item_element_grados_string">24.6 º</string>
+
+    <!-- Canal por defecto para FCM -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

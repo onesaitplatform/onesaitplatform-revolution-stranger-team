@@ -19,8 +19,6 @@ package com.minsait.onesaitplatform.digitaltwins;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 
