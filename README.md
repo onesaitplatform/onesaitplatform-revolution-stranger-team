@@ -19,11 +19,6 @@ Este es el github del equipo Stranger Team del reto Onesite Revolution.
 
 Let's Go!
 
-<p align="center">
-  <a src='https://www.onesaitplatform.com/'>
-    <img src='resources/images/onesaitPlatform-CreatingNewBusiness.png'/>
-  </a>
-</p>
  
 ## Versions 
 The platform has 3 distributions, that combined, they cover transformation and creation of new digital business needs
