@@ -2,6 +2,12 @@
 
 Este es el github del equipo Stranger Team del reto Onesite Revolution.
 
+<p align="center">
+  <a src='https://www.onesaitplatform.com/'>
+    <img src='/Identification/src/main/resources/static/img/logoStrangerTeam.jpg'/>
+  </a>
+</p>
+
 ## Componentes
     Miguel Angel Ruiz
     Jairo Peralta
