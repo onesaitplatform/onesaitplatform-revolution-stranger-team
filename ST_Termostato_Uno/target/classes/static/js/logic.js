@@ -29,7 +29,7 @@ function main(){
     digitalTwinApi.log('Main Termostato');
     // Convertimos los datos a un Map, luego lo pasamos por Jackson para convertirlo en un String con el JSON para realizar el guardado.
     var hm = new HashMap();
-    var temperatura = Math.round(getRandom(10, 30));
+    var temperatura = Math.round(getRandom(10, 38));
     var fecha = new Date();
 
     digitalTwinApi.setStatusValue("temperatura", temperatura)

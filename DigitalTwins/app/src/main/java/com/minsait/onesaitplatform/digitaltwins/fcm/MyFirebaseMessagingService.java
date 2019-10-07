@@ -28,6 +28,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.Notification;
+import io.reactivex.subjects.PublishSubject;
+
 /**
  * NOTE: There can only be one service in each app that receives FCM messages. If multiple
  * are declared in the Manifest then the first one will be chosen.
@@ -35,6 +38,18 @@ import java.util.Map;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+
+    private PublishSubject<Notification<Map<String, String>>> notificationPublisher;
+
+    @Override
+    public void onCreate() {
+        notificationPublisher = NotificationsManager.getPublisher();
+        super.onCreate();
+    }
+
+    public void dataReceived(Map<String, String> data) {
+        notificationPublisher.onNext(Notification.createOnNext(data));
+    }
 
     /**
      * Called when message is received.
@@ -67,6 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            dataReceived(remoteMessage.getData());
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.

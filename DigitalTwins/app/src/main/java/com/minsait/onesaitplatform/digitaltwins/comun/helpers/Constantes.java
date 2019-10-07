@@ -3,9 +3,14 @@ package com.minsait.onesaitplatform.digitaltwins.comun.helpers;
 // Clase que contiene contantes para la aplicación.
 public class Constantes {
     /* Urls base para los Digital Twins */
-    public static final String BASE_URL_ALARMA = "http://onesaitrevolution.ddns.net:21002";
+
+    /*public static final String BASE_URL_ALARMA = "http://onesaitrevolution.ddns.net:21002";
     public static final String BASE_URL_DETECTOR_HUMO = "http://onesaitrevolution.ddns.net:21001";
     public static final String BASE_URL_TERMOSTATO = "http://onesaitrevolution.ddns.net:21000";
+    */
+    //public static final String BASE_URL_DETECTOR_HUMO = "https://lab.onesaitplatform.com/DetectorHumo";
+    public static final String BASE_URL_DETECTOR_HUMO = "http://onesaitrevolution.ddns.net:21001";
+
     /* FIN: Urls base para los Digital Twins */
     /* Dirección de los recursos para los Digital Twins */
     public static final String RECURSO_ALARMA = "/Alarma/actions";

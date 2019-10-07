@@ -65,7 +65,7 @@ import java.util.Map;
 public class AugmentedImageActivity extends AppCompatActivity {
 
     private ArFragment arFragment;
-    private ImageView fitToScanView;
+    //private ImageView fitToScanView;
 
     // Augmented image and its associated center pose anchor, keyed by the augmented image in
     // the database.
@@ -77,7 +77,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-        fitToScanView = findViewById(R.id.image_view_fit_to_scan);
+        //  fitToScanView = findViewById(R.id.image_view_fit_to_scan);
 
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
 
@@ -181,7 +181,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (augmentedImageMap.isEmpty()) {
-            fitToScanView.setVisibility(View.VISIBLE);
+            //fitToScanView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -221,7 +221,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
 
                 case TRACKING:
                     // Have to switch to UI Thread to update View.
-                    fitToScanView.setVisibility(View.GONE);
+                    //fitToScanView.setVisibility(View.GONE);
 
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
