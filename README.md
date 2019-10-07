@@ -1,11 +1,13 @@
+## Stranger Team
+
 Este es el github del equipo Stranger Team del reto Onesite Revolution.
 
-Componentes:
+## Componentes
     Miguel Angel Ruiz
     Jairo Peralta
     Iñigo Crovetto
 
-Mentores:
+## Mentores
     Pedro Antona
     Raquel Barrio
 
